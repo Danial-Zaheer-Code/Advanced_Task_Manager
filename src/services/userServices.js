@@ -1,0 +1,48 @@
+import { connectionPool } from "../config/dbConfig.js";
+
+
+export async function addUser(user) {
+	try {
+		const [result] = await connectionPool.query(`
+			INSERT INTO users (email, fullname, pass, phone)
+			VALUES (?, ?, ?, ?);
+			`, [user.email, user.name, user.password, user.phone]);
+
+		console.log(result);
+		return result;
+
+	} catch (error) {
+		console.log(error)
+		throw error;
+	}
+}
+
+export async function getUser(email) {
+	try {
+		const [rows] = await connectionPool.query(`
+			SELECT id, email, fullname as name, pass as password, phone as phoneNumber 
+			FROM users
+			WHERE email=?;
+			`,[email]);
+
+		return rows.length > 0 ? rows[0] : null;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function getUserById(id) {
+	try {
+		const [rows] = await connectionPool.query(`
+			SELECT id, email, fullname as name, pass as password, phone as phoneNumber
+			FROM users
+			WHERE id=?;
+			`, [id]);
+
+		return rows.length > 0 ? rows[0] : null;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
