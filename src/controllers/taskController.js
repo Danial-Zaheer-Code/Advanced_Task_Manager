@@ -26,11 +26,11 @@ export async function changeStatus(req, res) {
             res.status(400).json("Wrong status");
         }
 
-        if (!await isTaskExists(req.id)) {
+        if (!await isTaskExists(req.body.id)) {
             return res.status(404).json("Task does not exists");
         }
 
-        await changeStatusDB(req.params.id, status);
+        await changeStatusDB(req.body.id, status);
         return res.status(200).json("Task updated successfully");
     } catch (error) {
         console.log(error);
@@ -40,7 +40,7 @@ export async function changeStatus(req, res) {
 
 export async function deleteTask(req, res) {
     try {
-        await deleteTaskDB(req.params.id);
+        await deleteTaskDB(req.body.id);
         return res.status(200).json("Task Deleted Successfully");
     } catch (error) {
         console.log(error);
@@ -70,7 +70,7 @@ export async function getCompletedTasks(req, res){
 
 export async function markCompleted(req, res){
     try {
-        await markCompletedDB(req.params.id);
+        await markCompletedDB(req.body.id);
         res.status(200).json("Marked Completed Successfully");
     } catch (error) {
         console.log(error);

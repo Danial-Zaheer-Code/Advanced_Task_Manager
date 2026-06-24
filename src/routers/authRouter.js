@@ -29,7 +29,7 @@ router.post('/register',
     register
 )
 
-router.post('/',
+router.post('/login',
     check("email")
         .isEmail()
         .withMessage("Invalid Email")

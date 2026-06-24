@@ -4,10 +4,9 @@ import { validateRequest } from "../middleware/requestValidation.js";
 import { validateToken } from "../middleware/tokenValidation.js";
 import { addTask, changeStatus, deleteTask, getCompletedTasks, getTodayTasks, markCompleted } from "../controllers/taskController.js";
 
-
 export const router = express.Router();
 
-router.post("/", 
+router.post("/add", 
     check("title")
         .notEmpty()
         .withMessage("Task Title is Required")
@@ -23,19 +22,19 @@ router.post("/",
     addTask
 )
 
-router.delete("/:id", 
+router.delete("/delete", 
     validateRequest,
     validateToken,
     deleteTask
 )
 
-router.patch("/status/:id",
+router.patch("/status",
     validateRequest,
     validateToken,
     changeStatus
 )
 
-router.get("/",
+router.get("/today",
     validateRequest,
     validateToken,
     getTodayTasks
@@ -47,7 +46,7 @@ router.get("/completed",
     getCompletedTasks
 )
 
-router.patch("/completed/:id",
+router.patch("/markComplete",
     validateRequest,
     validateToken,
     markCompleted
