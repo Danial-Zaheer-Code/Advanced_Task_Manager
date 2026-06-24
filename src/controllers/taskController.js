@@ -1,5 +1,5 @@
 import { connectionPool } from "../config/dbConfig.js";
-import { addTaskDB, changeStatusDB, deleteTaskDB, isTaskExists, getTodayTasksDB } from "../services/taskServices.js";
+import { addTaskDB, changeStatusDB, deleteTaskDB, isTaskExists, getTodayTasksDB, getCompletedTasksDB } from "../services/taskServices.js";
 
 export async function addTask(req, res) {
     try {
@@ -54,6 +54,16 @@ export async function getTodayTasks(req, res){
     try {
         const tasks = await getTodayTasksDB();
         res.status(200).json(tasks);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("Something Went Wrong. Try again later");
+    }
+}
+
+export async function getCompletedTasks(req, res){
+    try {
+        const completedTasks = await getCompletedTasksDB();
+        res.status(200).json(completedTasks);
     } catch (error) {
         console.log(error);
         res.status(500).json("Something Went Wrong. Try again later");

@@ -59,7 +59,7 @@ export function getAllTasks() {
 export async function getTodayTasksDB() {
     try {
         const [rows] = await connectionPool.query(`
-            SELECT t.title
+            SELECT t.id, t.title
             FROM tasks t
             INNER JOIN tasks_repeat r
             ON t.id = r.id
@@ -80,8 +80,18 @@ export async function getTodayTasksDB() {
     }
 }
 
-export function getCompletedTasksDB() {
-    
+export async function getCompletedTasksDB() {
+    try {
+        const [rows] = await connectionPool.query(`
+            SELECT t.id, t.title, c.completion_date
+            FROM tasks t
+            INNER JOIN tasks_completed c ON t.id = c.id;
+            `)
+        console.log(rows);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
 }
 
 function getTasks(filter) {
