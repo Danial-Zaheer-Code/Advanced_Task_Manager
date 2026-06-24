@@ -19,7 +19,7 @@ export async function addUser(user) {
 export async function getUser(email) {
 	try {
 		const [rows] = await connectionPool.query(`
-			SELECT id, email, fullname as name, pass as password, phone as phoneNumber 
+			SELECT id, email, name, pass as password, phone as phoneNumber 
 			FROM users
 			WHERE email=?;
 			`,[email]);
@@ -33,7 +33,7 @@ export async function getUser(email) {
 export async function getUserById(id) {
 	try {
 		const [rows] = await connectionPool.query(`
-			SELECT id, email, fullname as name, pass as password, phone as phoneNumber
+			SELECT id, email, name, pass as password, phone as phoneNumber
 			FROM users
 			WHERE id=?;
 			`, [id]);

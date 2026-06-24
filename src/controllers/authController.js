@@ -8,10 +8,6 @@ import { hash, compare } from '../utils/utils.js';
 
 export async function register(req, res) {
     try {
-        if (!token) {
-            return res.status(401), json("Unauthorized");
-        }
-
         const user = req.body;
 
         if (await getUser(user.email) != null) {

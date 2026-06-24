@@ -25,7 +25,6 @@ router.post('/register',
         .isLength({ min: 8 })
         .withMessage("Must be at least 8 chars long"),
     validateRequest,
-
     register
 )
 
