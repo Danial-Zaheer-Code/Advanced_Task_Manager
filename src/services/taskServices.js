@@ -35,7 +35,7 @@ export async function deleteTaskDB(id) {
         DELETE FROM tasks
         WHERE id=?
         `, [id]);
-            console.log("Query ran successfully");
+        console.log("Query ran successfully");
         return result;
     } catch (error) {
         throw error;
@@ -56,8 +56,32 @@ export function getAllTasks() {
 
 }
 
-export function getTodayTasks() {
+export async function getTodayTasksDB() {
+    try {
+        const [rows] = await connectionPool.query(`
+            SELECT t.title
+            FROM tasks t
+            INNER JOIN tasks_repeat r
+            ON t.id = r.id
+            WHERE t.user_id = 1
+            AND t.task_status = 'active'
+            AND r.day_repeat = DAYNAME(CURDATE())
+            AND NOT EXISTS (
+                SELECT 1
+                FROM tasks_completed c
+                WHERE c.id = t.id
+                AND c.completion_date = CURDATE()
+            );
+            `)
+        console.log(rows);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+}
 
+export function getCompletedTasksDB() {
+    
 }
 
 function getTasks(filter) {

@@ -2,7 +2,7 @@ import express from "express"
 import { check } from "express-validator";
 import { validateRequest } from "../middleware/requestValidation.js";
 import { validateToken } from "../middleware/tokenValidation.js";
-import { addTask, changeStatus, deleteTask } from "../controllers/taskController.js";
+import { addTask, changeStatus, deleteTask, getTodayTasks } from "../controllers/taskController.js";
 
 
 export const router = express.Router();
@@ -28,4 +28,10 @@ router.put("/status/:id",
     validateRequest,
     validateToken,
     changeStatus
+)
+
+router.get("/",
+    validateRequest,
+    validateToken,
+    getTodayTasks
 )
