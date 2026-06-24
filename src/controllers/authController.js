@@ -14,7 +14,6 @@ export async function register(req, res) {
 
         const user = req.body;
 
-        console.log('Check for existing user');
         if (await getUser(user.email) != null) {
             return res.status(409).json({
                 message: 'User already exists.'
@@ -79,8 +78,4 @@ export async function login(req, res) {
     }
 }
 
-export async function logout(req, res) {
-    return res.status(200).json({
-        message: 'Logout Successful'
-    })
-}
+

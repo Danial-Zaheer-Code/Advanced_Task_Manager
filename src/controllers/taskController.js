@@ -40,9 +40,7 @@ export async function changeStatus(req, res) {
 
 export async function deleteTask(req, res) {
     try {
-        console.log("Delete Controller")
         await deleteTaskDB(req.params.id);
-        console.log
         return res.status(200).json("Task Deleted Successfully");
     } catch (error) {
         console.log(error);

@@ -2,7 +2,7 @@ import express from "express"
 import { check } from "express-validator"
 import { validateRequest } from "../middleware/requestValidation.js";
 import {validateToken} from "../middleware/tokenValidation.js"
-import { register, login, logout } from "../controllers/authController.js";
+import { register, login } from "../controllers/authController.js";
 
 export const router = express.Router();
 
@@ -43,5 +43,3 @@ router.post('/',
     validateRequest,
     login
 )
-
-router.post('/logout',validateRequest, validateToken, logout);

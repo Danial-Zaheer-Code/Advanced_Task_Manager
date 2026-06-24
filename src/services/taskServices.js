@@ -7,12 +7,10 @@ export async function addTaskDB(userId, task) {
 			VALUES (?, ?);
 			`, [task.title, userId]);
         
-        console.log(result);
 
         const taskId = result.insertId;
 
         const repeatDays = task.repeatDays.map(day => [taskId,day]);
-        console.log(repeatDays);
         return await connectionPool.query(`
             INSERT INTO tasks_repeat(id, day_repeat)
             VALUES ?
@@ -38,12 +36,10 @@ export async function changeStatusDB(id, status) {
 
 export async function deleteTaskDB(id) {
     try {
-        console.log("Running query");
         const [result] = await connectionPool.query(`
         DELETE FROM tasks
         WHERE id=?
         `, [id]);
-        console.log("Query ran successfully");
         return result;
     } catch (error) {
         throw error;
@@ -77,7 +73,6 @@ export async function getTodayTasksDB() {
                 AND c.completion_date = CURDATE()
             );
             `)
-        console.log(rows);
         return rows;
     } catch (error) {
         throw error;
@@ -91,7 +86,6 @@ export async function getCompletedTasksDB() {
             FROM tasks t
             INNER JOIN tasks_completed c ON t.id = c.id;
             `)
-        console.log(rows);
         return rows;
     } catch (error) {
         throw error;

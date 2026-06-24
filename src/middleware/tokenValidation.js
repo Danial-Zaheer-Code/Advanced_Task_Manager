@@ -4,7 +4,6 @@ dotenv.config();
 import jwt from "jsonwebtoken"
 
 export async function validateToken(req, res, next) {
-    console.log("Trying to validate");
     const token = req.headers.authorization.split(' ')[1];
     if (!token) {
         return res.status(401).json("Unauthorized");
@@ -13,7 +12,6 @@ export async function validateToken(req, res, next) {
     try {
         const decodedToken = jwt.verify(token, process.env.SECRET);
         req.userId = decodedToken.userId;
-        console.log("Validation Successful");
         next();
     } catch (error) {
         console.log(error);
