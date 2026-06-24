@@ -12,7 +12,6 @@ export async function addUser(user) {
 		return result;
 
 	} catch (error) {
-		console.log(error)
 		throw error;
 	}
 }
@@ -27,7 +26,6 @@ export async function getUser(email) {
 
 		return rows.length > 0 ? rows[0] : null;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 }
@@ -42,7 +40,6 @@ export async function getUserById(id) {
 
 		return rows.length > 0 ? rows[0] : null;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 }

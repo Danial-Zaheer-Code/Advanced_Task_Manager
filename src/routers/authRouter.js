@@ -1,6 +1,7 @@
 import express from "express"
 import { check } from "express-validator"
-import { validateRequest } from "../middleware/validator.js";
+import { validateRequest } from "../middleware/requestValidation.js";
+import {validateToken} from "../middleware/tokenValidation.js"
 import { register, login, logout } from "../controllers/authController.js";
 
 export const router = express.Router();
@@ -24,6 +25,7 @@ router.post('/register',
         .isLength({ min: 8 })
         .withMessage("Must be at least 8 chars long"),
     validateRequest,
+
     register
 )
 
@@ -42,4 +44,4 @@ router.post('/',
     login
 )
 
-router.post('/logout',validateRequest, logout);
+router.post('/logout',validateRequest, validateToken, logout);

@@ -7,10 +7,13 @@ import { hash, compare } from '../utils/utils.js';
 
 
 export async function register(req, res) {
-
-    const user = req.body;
-
     try {
+        if (!token) {
+            return res.status(401), json("Unauthorized");
+        }
+
+        const user = req.body;
+
         console.log('Check for existing user');
         if (await getUser(user.email) != null) {
             return res.status(409).json({
@@ -50,15 +53,15 @@ export async function login(req, res) {
                 message: 'Wrong Password'
             });
         }
-
+        
         const token = jwt.sign(
             {
                 userId: existingUser.id,
-                email: existingUser.email
             },
             process.env.SECRET,
             { expiresIn: "1h" }
         );
+
         return res.status(200).json({
             message: 'Login Successful',
             success: true,
@@ -77,14 +80,6 @@ export async function login(req, res) {
 }
 
 export async function logout(req, res) {
-    const token = req.headers.authorization.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({
-            message: "Unathourized"
-        });
-    }
-
     return res.status(200).json({
         message: 'Logout Successful'
     })
