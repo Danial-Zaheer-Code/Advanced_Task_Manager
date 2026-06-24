@@ -4,8 +4,8 @@ export async function addTaskDB(userId, task) {
     try {
         const [result] = await connectionPool.query(`
 			INSERT INTO tasks (title, user_id, task_status)
-			VALUES (?, ?);
-			`, [task.title, userId, "active"]);
+			VALUES (?, ?, ?);
+			`, [task.title, userId, 'active']);
         
 
         const taskId = result.insertId;
