@@ -6,9 +6,17 @@ export async function addTaskDB(userId, task) {
 			INSERT INTO tasks (title, user_id)
 			VALUES (?, ?);
 			`, [task.title, userId]);
-
+        
         console.log(result);
-        return result;
+
+        const taskId = result.insertId;
+
+        const repeatDays = task.repeatDays.map(day => [taskId,day]);
+        console.log(repeatDays);
+        return await connectionPool.query(`
+            INSERT INTO tasks_repeat(id, day_repeat)
+            VALUES ?
+            `, [repeatDays]);
 
     } catch (error) {
         throw error;
