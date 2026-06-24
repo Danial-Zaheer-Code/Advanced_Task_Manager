@@ -2,7 +2,7 @@ import express from "express"
 import { check } from "express-validator";
 import { validateRequest } from "../middleware/requestValidation.js";
 import { validateToken } from "../middleware/tokenValidation.js";
-import { addTask, changeStatus, deleteTask, getCompletedTasks, getTodayTasks } from "../controllers/taskController.js";
+import { addTask, changeStatus, deleteTask, getCompletedTasks, getTodayTasks, markCompleted } from "../controllers/taskController.js";
 
 
 export const router = express.Router();
@@ -24,7 +24,7 @@ router.delete("/:id",
     deleteTask
 )
 
-router.put("/status/:id",
+router.patch("/status/:id",
     validateRequest,
     validateToken,
     changeStatus
@@ -40,4 +40,10 @@ router.get("/completed",
     validateRequest,
     validateToken,
     getCompletedTasks
+)
+
+router.patch("/completed/:id",
+    validateRequest,
+    validateToken,
+    markCompleted
 )

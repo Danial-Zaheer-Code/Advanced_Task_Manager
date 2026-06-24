@@ -52,10 +52,6 @@ export async function isTaskExists(title) {
     }
 }
 
-export function getAllTasks() {
-
-}
-
 export async function getTodayTasksDB() {
     try {
         const [rows] = await connectionPool.query(`
@@ -94,6 +90,14 @@ export async function getCompletedTasksDB() {
     }
 }
 
-function getTasks(filter) {
-
+export async function markCompletedDB(id){
+    try {
+        const [result] = await connectionPool.query(`
+            INSERT IGNORE INTO tasks_completed(id)
+            VALUES(?)
+            `,[id]);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 }
