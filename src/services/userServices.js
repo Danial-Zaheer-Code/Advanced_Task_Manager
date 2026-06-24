@@ -4,7 +4,7 @@ import { connectionPool } from "../config/dbConfig.js";
 export async function addUser(user) {
 	try {
 		const [result] = await connectionPool.query(`
-			INSERT INTO users (email, fullname, pass, phone)
+			INSERT INTO users (email, name, pass, phone)
 			VALUES (?, ?, ?, ?);
 			`, [user.email, user.name, user.password, user.phone]);
 
