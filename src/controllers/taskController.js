@@ -6,7 +6,7 @@ export async function addTask(req, res) {
         const userId = req.userId;
         const task = req.body;
         const [isExist] = await isTaskExists(task.title) 
-        if (isExist[0].user_exists) {
+        if (isExist[0].task_exists) {
             return res.status(409).json("Task already exists");
         }
 
@@ -26,8 +26,9 @@ export async function changeStatus(req, res) {
             res.status(400).json("Wrong status");
         }
 
-        if (!await isTaskExists(req.body.id)) {
-            return res.status(404).json("Task does not exists");
+        const [isExist] = await isTaskExists(task.title) 
+        if (!isExist[0].task_exists) {
+            return res.status(409).json("Task does not exists");
         }
 
         await changeStatusDB(req.body.id, status);
