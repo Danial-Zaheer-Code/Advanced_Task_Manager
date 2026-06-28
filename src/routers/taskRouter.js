@@ -22,7 +22,12 @@ router.post("/add",
     addTask
 )
 
-router.delete("/delete", 
+router.delete("/delete",
+    check("id")
+    .exists()
+    .withMessage("id is required")
+    .isNumeric()
+    .withMessage("id must be a number"),
     validateRequest,
     validateToken,
     deleteTask
