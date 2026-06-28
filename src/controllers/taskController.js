@@ -45,6 +45,12 @@ export async function changeStatus(req, res) {
 
 export async function deleteTask(req, res) {
     try {
+        const isExist = await taskServices.isTaskExistsWithId(req.body.id);
+
+        if(!isExist){
+            return res.status(409).json("Task does not exists");
+        }
+
         await taskServices.deleteTaskDB(req.body.id);
         return res.status(200).json("Task Deleted Successfully");
     } catch (error) {

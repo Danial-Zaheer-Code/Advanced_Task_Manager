@@ -39,7 +39,9 @@ export async function changeStatusDB(id, status) {
 export async function deleteTaskDB(id) {
     try {
         const [result] = await connectionPool.query(`
-        DELETE FROM tasks
+        UPDATE tasks
+        SET is_deleted=1,
+        deleted_at=CURRENT_TIMESTAMP
         WHERE id=?
         `, [id]);
         return result;
@@ -51,10 +53,10 @@ export async function deleteTaskDB(id) {
 export async function isTaskExists(title) {
     try {
         const [result] = await connectionPool.query(`
-        SELECT EXISTS (SELECT 1 FROM tasks WHERE title=?) AS task_exists;
+        SELECT * FROM tasks WHERE title=? AND is_deleted=0;
         `, [title]);
 
-        return result.length == 1 ? true : false;
+        return result.length == 0 ? false : true; 
     } catch (error) {
         throw error;
     }
@@ -63,11 +65,10 @@ export async function isTaskExists(title) {
 export async function isTaskExistsWithId(id) {
     try {
         const [result] =  await connectionPool.query(`
-        SELECT EXISTS (SELECT 1 FROM tasks WHERE id=?) AS task_exists;
+        SELECT * FROM tasks WHERE id=? AND is_deleted=0;
         `, [id]);
 
-
-        return result.length == 1 ? true : false;
+        return result.length == 0 ? false : true; 
     } catch (error) {
         throw error;
     }
