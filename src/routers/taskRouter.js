@@ -29,6 +29,16 @@ router.delete("/delete",
 )
 
 router.patch("/status",
+    check("id")
+        .exists()
+        .withMessage("Id is rquired")
+        .isNumeric()
+        .withMessage("Id must be a number"),
+    check("status")
+        .exists()
+        .withMessage("Status is required")
+        .isString()
+        .withMessage("Status must be a string"),
     validateRequest,
     validateToken,
     changeStatus

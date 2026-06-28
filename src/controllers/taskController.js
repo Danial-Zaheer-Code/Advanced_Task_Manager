@@ -20,6 +20,7 @@ export async function addTask(req, res) {
 
 export async function changeStatus(req, res) {
     try {
+        console.log(req.body);
         const status = req.body.status.toLowerCase();
 
         if(status != "active" && status != "inactive"){
