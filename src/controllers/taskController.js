@@ -81,6 +81,16 @@ export async function getCompletedTasks(req, res){
 
 export async function markCompleted(req, res){
     try {
+        const isExist = await taskServices.isTaskExistsWithId(req.body.id);
+
+        if(!isExist){
+            return res.status(408).json("Task does not exist");
+        }
+
+        const isCompleted = await taskServices.isCompletedToday(req.body.id);
+        if(isCompleted){
+            return res.status(200).json("Already Completed")
+        }
         await taskServices.markCompletedDB(req.body.id);
         res.status(200).json("Marked Completed Successfully");
     } catch (error) {

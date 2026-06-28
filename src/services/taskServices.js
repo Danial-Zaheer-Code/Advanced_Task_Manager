@@ -125,3 +125,16 @@ export async function markCompletedDB(id){
     }
 }
 
+export async function isCompletedToday(id){
+    try{
+        const [result] = await connectionPool.query(`
+            SELECT * FROM tasks_completed
+            WHERE task_id = ?
+            AND DATE(completion_date) = CURDATE();
+        `, [id]);
+
+        return result.length != 0 ? true : false;
+    } catch(error){
+        throw error;
+    }
+}
