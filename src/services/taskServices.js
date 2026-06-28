@@ -27,8 +27,10 @@ export async function changeStatusDB(id, status) {
         UPDATE tasks
         SET task_status=?
         WHERE id=?
-        `, [status, id]);
-        return result
+        AND task_status <> ?
+        `, [status, id, status]);
+        return result.affectedRows == 1 ? true : false;
+
     } catch (error) {
         throw error;
     }
@@ -51,6 +53,20 @@ export async function isTaskExists(title) {
         return await connectionPool.query(`
         SELECT EXISTS (SELECT 1 FROM tasks WHERE title=?) AS task_exists;
         `, [title]);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function isTaskExistsWithId(id) {
+    try {
+        const [result] =  await connectionPool.query(`
+        SELECT EXISTS (SELECT 1 FROM tasks WHERE id=?) AS task_exists;
+        `, [id]);
+
+        console.log(result);
+
+        return result.length == 1 ? true : false;
     } catch (error) {
         throw error;
     }

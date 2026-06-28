@@ -1,5 +1,5 @@
 import { connectionPool } from "../config/dbConfig.js";
-import { addTaskDB, changeStatusDB, deleteTaskDB, isTaskExists, getTodayTasksDB, getCompletedTasksDB, markCompletedDB } from "../services/taskServices.js";
+import { addTaskDB, changeStatusDB, deleteTaskDB, isTaskExists, getTodayTasksDB, getCompletedTasksDB, markCompletedDB, isTaskExistsWithId } from "../services/taskServices.js";
 
 export async function addTask(req, res) {
     try {
@@ -20,20 +20,24 @@ export async function addTask(req, res) {
 
 export async function changeStatus(req, res) {
     try {
-        console.log(req.body);
         const status = req.body.status.toLowerCase();
 
         if(status != "active" && status != "inactive"){
             res.status(400).json("Wrong status");
         }
 
-        const [isExist] = await isTaskExists(task.title) 
-        if (!isExist[0].task_exists) {
+        const isExist = await isTaskExistsWithId(req.body.id) 
+        if (!isExist) {
             return res.status(409).json("Task does not exists");
         }
 
-        await changeStatusDB(req.body.id, status);
-        return res.status(200).json("Task updated successfully");
+        const hasChanged = await changeStatusDB(req.body.id, status);
+
+        if(!hasChanged){
+            return res.status(200).json(`Status is alrady ${status}`)
+        }
+
+        return res.status(200).json("Task Status updated successfully");
     } catch (error) {
         console.log(error);
         return res.status(500).json("Something went wrong. Try again later");
