@@ -50,9 +50,11 @@ export async function deleteTaskDB(id) {
 
 export async function isTaskExists(title) {
     try {
-        return await connectionPool.query(`
+        const [result] = await connectionPool.query(`
         SELECT EXISTS (SELECT 1 FROM tasks WHERE title=?) AS task_exists;
         `, [title]);
+
+        return result.length == 1 ? true : false;
     } catch (error) {
         throw error;
     }

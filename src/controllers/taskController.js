@@ -4,8 +4,8 @@ export async function addTask(req, res) {
     try {
         const userId = req.userId;
         const task = req.body;
-        const [isExist] = await taskServices.isTaskExists(task.title) 
-        if (isExist[0].task_exists) {
+        const isExist = await taskServices.isTaskExists(task.title) 
+        if (isExist) {
             return res.status(409).json("Task already exists");
         }
 
