@@ -1,16 +1,15 @@
 import { connectionPool } from "../config/dbConfig.js";
-import { addTaskDB, changeStatusDB, deleteTaskDB, isTaskExists, getTodayTasksDB, getCompletedTasksDB, markCompletedDB, isTaskExistsWithId } from "../services/taskServices.js";
-
+import * as taskServices from "../services/taskServices.js"
 export async function addTask(req, res) {
     try {
         const userId = req.userId;
         const task = req.body;
-        const [isExist] = await isTaskExists(task.title) 
+        const [isExist] = await taskServices.isTaskExists(task.title) 
         if (isExist[0].task_exists) {
             return res.status(409).json("Task already exists");
         }
 
-        await addTaskDB(userId, task);
+        await taskServices.addTaskDB(userId, task);
         return res.status(201).json("Task created successfully");
     } catch (error) {
         console.log(error);
@@ -26,12 +25,12 @@ export async function changeStatus(req, res) {
             res.status(400).json("Wrong status");
         }
 
-        const isExist = await isTaskExistsWithId(req.body.id) 
+        const isExist = await taskServices.isTaskExistsWithId(req.body.id) 
         if (!isExist) {
             return res.status(409).json("Task does not exists");
         }
 
-        const hasChanged = await changeStatusDB(req.body.id, status);
+        const hasChanged = await taskServices.changeStatusDB(req.body.id, status);
 
         if(!hasChanged){
             return res.status(200).json(`Status is alrady ${status}`)
@@ -46,7 +45,7 @@ export async function changeStatus(req, res) {
 
 export async function deleteTask(req, res) {
     try {
-        await deleteTaskDB(req.body.id);
+        await taskServices.deleteTaskDB(req.body.id);
         return res.status(200).json("Task Deleted Successfully");
     } catch (error) {
         console.log(error);
@@ -56,7 +55,7 @@ export async function deleteTask(req, res) {
 
 export async function getTodayTasks(req, res){
     try {
-        const tasks = await getTodayTasksDB();
+        const tasks = await taskServices.getTodayTasksDB();
         res.status(200).json(tasks);
     } catch (error) {
         console.log(error);
@@ -66,7 +65,7 @@ export async function getTodayTasks(req, res){
 
 export async function getCompletedTasks(req, res){
     try {
-        const completedTasks = await getCompletedTasksDB();
+        const completedTasks = await taskServices.getCompletedTasksDB();
         res.status(200).json(completedTasks);
     } catch (error) {
         console.log(error);
@@ -76,7 +75,7 @@ export async function getCompletedTasks(req, res){
 
 export async function markCompleted(req, res){
     try {
-        await markCompletedDB(req.body.id);
+        await taskServices.markCompletedDB(req.body.id);
         res.status(200).json("Marked Completed Successfully");
     } catch (error) {
         console.log(error);

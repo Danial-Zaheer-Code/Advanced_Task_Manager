@@ -64,7 +64,6 @@ export async function isTaskExistsWithId(id) {
         SELECT EXISTS (SELECT 1 FROM tasks WHERE id=?) AS task_exists;
         `, [id]);
 
-        console.log(result);
 
         return result.length == 1 ? true : false;
     } catch (error) {
@@ -119,3 +118,4 @@ export async function markCompletedDB(id){
         throw error;
     }
 }
+
