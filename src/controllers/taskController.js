@@ -61,7 +61,7 @@ export async function deleteTask(req, res) {
 
 export async function getTodayTasks(req, res){
     try {
-        const tasks = await taskServices.getTodayTasksDB();
+        const tasks = await taskServices.getTodayTasksDB(req.userId);
         res.status(200).json(tasks);
     } catch (error) {
         console.log(error);
@@ -71,7 +71,7 @@ export async function getTodayTasks(req, res){
 
 export async function getCompletedTasks(req, res){
     try {
-        const completedTasks = await taskServices.getCompletedTasksDB();
+        const completedTasks = await taskServices.getCompletedTasksDB(req.userId);
         res.status(200).json(completedTasks);
     } catch (error) {
         console.log(error);

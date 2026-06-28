@@ -74,36 +74,39 @@ export async function isTaskExistsWithId(id) {
     }
 }
 
-export async function getTodayTasksDB() {
+export async function getTodayTasksDB(userId) {
     try {
         const [rows] = await connectionPool.query(`
             SELECT t.id, t.title
             FROM tasks t
             INNER JOIN tasks_repeat r
             ON t.id = r.task_id
-            WHERE t.user_id = 1
+            WHERE t.user_id = ?
             AND t.task_status = 'active'
+            AND t.is_deleted = 0
             AND r.day_repeat = DAYNAME(CURDATE())
             AND NOT EXISTS (
                 SELECT 1
                 FROM tasks_completed c
                 WHERE c.task_id = t.id
-                AND c.completion_date = CURDATE()
+                AND DATE(c.completion_date) = CURDATE()
             );
-            `)
+            `, [userId])
         return rows;
     } catch (error) {
         throw error;
     }
 }
 
-export async function getCompletedTasksDB() {
+export async function getCompletedTasksDB(userId) {
     try {
         const [rows] = await connectionPool.query(`
-            SELECT t.id, t.title, c.completion_date
+            SELECT t.id, t.title, DATE(c.completion_date) as completion_date
             FROM tasks t
-            INNER JOIN tasks_completed c ON t.id = c.task_id;
-            `)
+            INNER JOIN tasks_completed c ON t.id = c.task_id
+            WHERE t.user_id = ? 
+            AND t.is_deleted = 0;
+            `, [userId])
         return rows;
     } catch (error) {
         throw error;
