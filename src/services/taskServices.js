@@ -77,7 +77,13 @@ export async function isTaskExistsWithId(id) {
 export async function getTodayTasksDB(userId) {
     try {
         const [result] = await connectionPool.query(`
-            SELECT t.id, t.title
+            SELECT t.id, t.title,
+            EXISTS (
+                SELECT 1
+                FROM tasks_completed c
+                WHERE c.task_id = t.id
+                AND CURDATE() = DATE(c.completion_date)
+            ) AS is_completed
             FROM tasks t
             INNER JOIN tasks_repeat r
             ON t.id = r.task_id
@@ -85,12 +91,7 @@ export async function getTodayTasksDB(userId) {
             AND t.task_status = 'active'
             AND t.is_deleted = 0
             AND r.day_repeat = DAYNAME(CURDATE())
-            AND NOT EXISTS (
-                SELECT 1
-                FROM tasks_completed c
-                WHERE c.task_id = t.id
-                AND DATE(c.completion_date) = CURDATE()
-            );
+            ;
             `, [userId])
         return result;
     } catch (error) {
