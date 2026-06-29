@@ -8,7 +8,6 @@ export async function addUser(user) {
 			VALUES (?, ?, ?, ?);
 			`, [user.email, user.name, user.password, user.phone]);
 
-		console.log(result);
 		return result;
 
 	} catch (error) {
