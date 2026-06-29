@@ -2,22 +2,28 @@ import dotenv from "dotenv"
 dotenv.config();
 
 import jwt from "jsonwebtoken"
-import { getUser, getUserById, addUser } from '../services/userServices.js';
+import * as userServices from "../services/userServices.js"
 import { hash, compare } from '../utils/utils.js';
-
 
 export async function register(req, res) {
     try {
         const user = req.body;
 
-        if (await getUser(user.email) != null) {
+        if (await userServices.getUser(user.email) != null) {
             return res.status(409).json({
                 message: 'User already exists.'
             })
         }
 
+        if(await userServices.isPhoneNumberExist(user.phone)){
+            return res.status(409).json({
+                message: "Phone Number already exists"
+            });
+        }
+
+
         user.password = await hash(user.password);
-        const result = await addUser(user)
+        const result = await userServices.ddUser(user)
 
         return res.status(201).json({
             message: 'User created successfully'
@@ -34,7 +40,7 @@ export async function login(req, res) {
     const user = req.body;
 
     try {
-        const existingUser = await getUser(user.email);
+        const existingUser = await userServices.getUser(user.email);
         if (!existingUser) {
             return res.status(404).json({
                 message: 'User not found'
@@ -73,5 +79,3 @@ export async function login(req, res) {
         });
     }
 }
-
-

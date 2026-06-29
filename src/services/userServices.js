@@ -42,3 +42,14 @@ export async function getUserById(id) {
 		throw error;
 	}
 }
+
+
+export async function isPhoneNumberExist(phoneNumber){
+	const [result] = await connectionPool.query(`
+		SELECT phone
+		FROM users
+		WHERE phone=?
+	`,[phoneNumber]);
+
+	return result.length > 0;
+}
