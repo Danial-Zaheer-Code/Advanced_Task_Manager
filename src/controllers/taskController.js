@@ -1,5 +1,6 @@
 import { connectionPool } from "../config/dbConfig.js";
 import * as taskServices from "../services/taskServices.js"
+import { areValid } from "../utils/utils.js";
 export async function addTask(req, res) {
     try {
         const userId = req.userId;
@@ -7,6 +8,10 @@ export async function addTask(req, res) {
         const isExist = await taskServices.isTaskExists(task.title) 
         if (isExist) {
             return res.status(409).json("Task already exists");
+        }
+
+        if(!areValid(task.repeatDays)){
+            return res.status(400).json("Invalid weekdays");
         }
 
         await taskServices.addTaskDB(userId, task);
