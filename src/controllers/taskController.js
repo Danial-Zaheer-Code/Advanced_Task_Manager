@@ -113,3 +113,25 @@ export async function getAllTasks(req,res) {
         res.status(500).json("Something Went Wrong. Try again later");
     }
 }
+
+
+export async function editTask(req, res) {
+    try {
+        const task = req.body;
+        const isExist = await taskServices.isTaskExistsWithId(task.id) 
+        if (!isExist) {
+            return res.status(408).json("Task does not exist");
+        }
+
+        if(!areValid(task.repeatDays)){
+            return res.status(400).json("Invalid weekdays");
+        }
+
+        await taskServices.editTask(task);
+        return res.status(200).json("Task Edited successfully");
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("Something Went Wrong. Try again later");    
+    }
+}

@@ -21,6 +21,22 @@ router.post("/add",
     taskController.addTask
 )
 
+router.put("/edit",
+    check("title")
+        .notEmpty()
+        .withMessage("Task Title is Required")
+        .trim()
+        .escape(),
+    check("repeatDays")
+        .exists()
+        .withMessage("Days to Repeat Tasks is compulsory")
+        .isArray({ min: 1 })
+        .withMessage('Array cannot be empty'),
+    validateRequest,
+    validateToken,
+    taskController.editTask
+)
+
 router.delete("/delete",
     check("id")
     .exists()

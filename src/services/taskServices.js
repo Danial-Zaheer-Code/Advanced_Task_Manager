@@ -67,7 +67,6 @@ export async function isTaskExistsWithId(id) {
         const [result] =  await connectionPool.query(`
         SELECT * FROM tasks WHERE id=? AND is_deleted=0;
         `, [id]);
-
         return result.length == 0 ? false : true; 
     } catch (error) {
         throw error;
@@ -151,6 +150,30 @@ export async function getAllTasksDB(userId) {
         `);
 
         return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function editTask(task){
+    try {
+        await connectionPool.query(`
+            UPDATE tasks
+            SET title=?
+            WHERE id=?            
+        `,[task.title, task.id]);
+
+        await connectionPool.query(`
+            DELETE FROM tasks_repeat
+            WHERE task_id = ?
+        `, [task.id]);
+
+        const repeatDays = task.repeatDays.map(day => [task.id,day]);
+        return await connectionPool.query(`
+            INSERT INTO tasks_repeat(task_id, day_repeat)
+            VALUES ?
+        `, [repeatDays]);
+
     } catch (error) {
         throw error;
     }
