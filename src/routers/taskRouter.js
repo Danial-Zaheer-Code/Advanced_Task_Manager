@@ -2,8 +2,7 @@ import express from "express"
 import { check } from "express-validator";
 import { validateRequest } from "../middleware/requestValidation.js";
 import { validateToken } from "../middleware/tokenValidation.js";
-import { addTask, changeStatus, deleteTask, getCompletedTasks, getTodayTasks, markCompleted } from "../controllers/taskController.js";
-
+import * as taskController from "../controllers/taskController.js"
 export const router = express.Router();
 
 router.post("/add", 
@@ -19,7 +18,7 @@ router.post("/add",
         .withMessage('Array cannot be empty'),
     validateRequest,
     validateToken,
-    addTask
+    taskController.addTask
 )
 
 router.delete("/delete",
@@ -30,7 +29,7 @@ router.delete("/delete",
     .withMessage("id must be a number"),
     validateRequest,
     validateToken,
-    deleteTask
+    taskController.deleteTask
 )
 
 router.patch("/status",
@@ -46,23 +45,29 @@ router.patch("/status",
         .withMessage("Status must be a string"),
     validateRequest,
     validateToken,
-    changeStatus
+    taskController.changeStatus
 )
 
 router.get("/today",
     validateRequest,
     validateToken,
-    getTodayTasks
+    taskController.getTodayTasks
 )
 
 router.get("/completed",
     validateRequest,
     validateToken,
-    getCompletedTasks
+    taskController.getCompletedTasks
 )
 
 router.patch("/markComplete",
     validateRequest,
     validateToken,
-    markCompleted
+    taskController.markCompleted
+)
+
+router.get("/all",
+    validateRequest,
+    validateToken,
+    taskController.getAllTasks
 )

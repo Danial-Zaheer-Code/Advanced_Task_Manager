@@ -76,7 +76,7 @@ export async function isTaskExistsWithId(id) {
 
 export async function getTodayTasksDB(userId) {
     try {
-        const [rows] = await connectionPool.query(`
+        const [result] = await connectionPool.query(`
             SELECT t.id, t.title
             FROM tasks t
             INNER JOIN tasks_repeat r
@@ -92,7 +92,7 @@ export async function getTodayTasksDB(userId) {
                 AND DATE(c.completion_date) = CURDATE()
             );
             `, [userId])
-        return rows;
+        return result;
     } catch (error) {
         throw error;
     }
@@ -100,14 +100,14 @@ export async function getTodayTasksDB(userId) {
 
 export async function getCompletedTasksDB(userId) {
     try {
-        const [rows] = await connectionPool.query(`
+        const [result] = await connectionPool.query(`
             SELECT t.id, t.title, DATE(c.completion_date) as completion_date
             FROM tasks t
             INNER JOIN tasks_completed c ON t.id = c.task_id
             WHERE t.user_id = ? 
             AND t.is_deleted = 0;
             `, [userId])
-        return rows;
+        return result;
     } catch (error) {
         throw error;
     }
@@ -135,6 +135,22 @@ export async function isCompletedToday(id){
 
         return result.length != 0 ? true : false;
     } catch(error){
+        throw error;
+    }
+}
+
+export async function getAllTasksDB(userId) {
+    try {
+        const [result] = await connectionPool.query(`
+            SELECT t.id, t.title, t.task_status, GROUP_CONCAT(r.day_repeat) repeat_days
+            FROM tasks t
+            LEFT JOIN tasks_repeat r ON t.id = r.task_id
+            WHERE t.is_deleted = 0
+            GROUP BY t.id;
+        `);
+
+        return result;
+    } catch (error) {
         throw error;
     }
 }

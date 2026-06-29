@@ -98,3 +98,13 @@ export async function markCompleted(req, res){
         res.status(500).json("Something Went Wrong. Try again later");
     }
 }
+
+export async function getAllTasks(req,res) {
+    try {
+        const allTasks = await taskServices.getAllTasksDB(req.userId);
+        res.status(200).json(allTasks);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json("Something Went Wrong. Try again later");
+    }
+}
