@@ -23,7 +23,7 @@ export async function register(req, res) {
 
 
         user.password = await hash(user.password);
-        const result = await userServices.ddUser(user)
+        const result = await userServices.addUser(user)
 
         return res.status(201).json({
             message: 'User created successfully'

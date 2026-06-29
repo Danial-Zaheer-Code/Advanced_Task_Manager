@@ -29,7 +29,7 @@ export async function changeStatusDB(id, status) {
         WHERE id=?
         AND task_status <> ?
         `, [status, id, status]);
-        return result.affectedRows == 1 ? true : false;
+        return result.affectedRows == 1;
 
     } catch (error) {
         throw error;
@@ -44,7 +44,7 @@ export async function deleteTaskDB(id) {
         deleted_at=CURRENT_TIMESTAMP
         WHERE id=?
         `, [id]);
-        return result;
+        return result.affectedRows == 1;
     } catch (error) {
         throw error;
     }
@@ -56,7 +56,7 @@ export async function isTaskExists(title) {
         SELECT * FROM tasks WHERE title=? AND is_deleted=0;
         `, [title]);
 
-        return result.length == 0 ? false : true; 
+        return result.length == 1; 
     } catch (error) {
         throw error;
     }
@@ -67,7 +67,7 @@ export async function isTaskExistsWithId(id) {
         const [result] =  await connectionPool.query(`
         SELECT * FROM tasks WHERE id=? AND is_deleted=0;
         `, [id]);
-        return result.length == 0 ? false : true; 
+        return result.length == 1; 
     } catch (error) {
         throw error;
     }
@@ -119,7 +119,7 @@ export async function markCompletedDB(id){
             INSERT IGNORE INTO tasks_completed(task_id)
             VALUES(?)
             `,[id]);
-        return result;
+        return result.affectedRows == 1;
     } catch (error) {
         throw error;
     }
@@ -133,7 +133,7 @@ export async function isCompletedToday(id){
             AND DATE(completion_date) = CURDATE();
         `, [id]);
 
-        return result.length != 0 ? true : false;
+        return result.length == 1;
     } catch(error){
         throw error;
     }
@@ -177,4 +177,14 @@ export async function editTask(task){
     } catch (error) {
         throw error;
     }
+}
+
+export async function isTitleTaken(id, title){
+    const [result] = await connectionPool.query(`
+        SELECT * FROM tasks 
+        WHERE title=?
+        AND id<>?
+        AND is_deleted=0;
+    `,[title, id])
+    return result.length > 0;
 }
